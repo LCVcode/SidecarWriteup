@@ -25,10 +25,10 @@
     * Pulsar Broker
         - Handles all Pulsar message transfers.
 * A "pulsar instance" is one or more pulsar clusters managed by a "global ZooKeeper" cluster.
-* A "pulsar cluster" consists of at least nine machines:
+* A "pulsar cluster" consists of at least nine containers:
     * 3 clustered ZooKeepers
     * 3 clustered Brokers
-    * 3+ clustereds BookKeepers
+    * 3+ clustered BookKeepers
 * A client can connect to one of the Brokers to begin consuming and producing messages.
     * There is a pulsar python package that can be used in charms.
 
@@ -67,7 +67,7 @@
 ## The Positives
 * I found it very intuitive and fast to create the first working prototype of a charm
 
-## Obstacles
+## Obstacles / Feedback
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
 * The most prevalent blocker was the inability to run one-off commands from pebble.
 * This resulted in manual steps being required for deployment of pulsar.
