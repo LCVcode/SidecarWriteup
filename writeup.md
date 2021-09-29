@@ -40,7 +40,7 @@
 [Pulsar-dummy-k8s](https://code.launchpad.net/~lcvcode/+git/pulsar-dummy-client)
 
 ## Design
-* Pulsar-k8s went through several design iterations, and the final design is as follows:
+* Design of this Pulsar cluster is as follows:
     * Two charms:
         - Bookie-k8s (BookKeeper)
         - Pulsar-k8s (ZooKeeper & Broker)
@@ -50,29 +50,26 @@
     * A dummy pulsar client charm is used to simulate an application connecting to the pulsar cluster.
 
 ## Positives of Sidecar 
-* I found it very intuitive and fast to create the first working prototype of a charm
-* Documentation was good and it was easy to navigate
+* Documentation was good and it was easy to navigate.
+* I found it very intuitive and fast to create the first working prototype of a charm.
 
 ## Obstacles / Feedback
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
 * Executing one-off commands via pebble would have been useful.
 
-### Accessing Containers
-* Inability to `juju ssh` made it difficult to start development.
-* Finding the `kubectl` command to access containers took time.
-    ```
-    $ kubectl exec --stdin --tty <charm-name>-<unit-num> -n <model-name> -c <container-name> -- /bin/bash
-    ```
-* I wish this tied into juju like: `juju ssh <unit> <optional-container-name>`.
-
-### [Networking problems when using a VIP after Juju version 2.9.7](https://bugs.launchpad.net/juju/+bug/1943786)
-* After Juju version 2.9.7, charms have vips.
-* Charms relating via vip cannot find daemons listening at `<vip>:<port>`.
+### [Networking problems when using application IP after Juju version 2.9.7](https://bugs.launchpad.net/juju/+bug/1943786)
+* After Juju version 2.9.7, applications have IPs, in addition to individual units.
+* Charms relating via this application IP cannot find daemons listening at `<application-ip>:<port>`.
 * I avoided this bug by reverting my Juju controller to version 2.9.3.
 
 ### Charms Breaking After Redeploying a Previously Related Charm
 * Relations have a default maximum count of one.
 * Relation counts are not reset when a relation is removed.
+
+### Unclear Required Changes Between Juju Versions
+* Between periods of development, a new Juju version was released which required the addition of a charmcraft.yaml file.
+* As a result, when I rebuilt my controller and used `charmcraft build` on my charms, the builds would fail
+* I could not easily find documentation about this change
 
 ## Future Pulsar Improvements
 * Final version of pulsar would have ZooKeeper and Broker in separate charms, with Broker & Bookie related to ZooKeeper.
