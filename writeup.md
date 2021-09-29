@@ -62,20 +62,16 @@
 * Charms relating via this application IP cannot find daemons listening at `<application-ip>:<port>`.
 * I avoided this bug by reverting my Juju controller to version 2.9.3.
 
-### Charms Breaking After Redeploying a Previously Related Charm
-* Relations have a default maximum count of one.
-* Relation counts are not reset when a relation is removed.
-
 ### Unclear Required Changes Between Juju Versions
 * Between periods of development, a new Juju version was released which required the addition of a charmcraft.yaml file.
-* As a result, when I rebuilt my controller and used `charmcraft build` on my charms, the builds would fail
-* I could not easily find documentation about this change
+* As a result, when I rebuilt my controller and used `charmcraft build` on my charms, the builds would fail.
+* I could not easily find documentation about this change.
 
 ## Future Pulsar Improvements
-* Final version of pulsar would have ZooKeeper and Broker in separate charms, with Broker & Bookie related to ZooKeeper.
+* Final version of pulsar would have ZooKeeper and Broker in separate charms, with all three charms related to each other.
 * Expanded config options for all three applications.
 * ZooKeeper:
-    - Ability to create znodes using relation data.
+    - Create of znodes using a one-off command after connection from Bookie.
     - Initialization of metadata after Broker connects to it.
 * Broker:
     - Start of Broker process only after ZooKeeper is started and connected to Bookie.
