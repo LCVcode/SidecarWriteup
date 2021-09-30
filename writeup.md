@@ -33,11 +33,11 @@
     * There is a pulsar python package that can be used in charms.
 
 ## Code
-[Bookie-k8s](https://code.launchpad.net/~lcvcode/+git/bookie-k8s)
+[Bookie](https://code.launchpad.net/~lcvcode/+git/bookie)
 
-[Pulsar-k8s](https://code.launchpad.net/~lcvcode/+git/pulsar-k8s)
+[Pulsar](https://code.launchpad.net/~lcvcode/+git/pulsar)
 
-[Pulsar-dummy-k8s](https://code.launchpad.net/~lcvcode/+git/pulsar-dummy-client)
+[Pulsar-client-dummy](https://code.launchpad.net/~lcvcode/+git/pulsar-client-dummy)
 
 ## Design
 * Design of this Pulsar cluster is as follows:
@@ -64,7 +64,7 @@
 
 ### Unclear Required Changes Between Juju Versions
 * Between periods of development, a new Juju version was released which required the addition of a charmcraft.yaml file.
-* As a result, when I rebuilt my controller and used `charmcraft build` on my charms, the builds would fail.
+* Without it, `charmcraft build` would fail.
 * I could not easily find documentation about this change.
 
 ## Future Pulsar Improvements
