@@ -42,12 +42,14 @@
 ## Design
 * Design of this Pulsar cluster is as follows:
     * Two charms:
-        - Bookie-k8s (BookKeeper)
-        - Pulsar-k8s (ZooKeeper & Broker)
-    * Pulsar-k8s intended to be scaled any odd value >= 3.
-    * Bookie-k8s can be scaled to 3+.
-    * Bookie-k8s requires relation to pulsar-k8s to access ZooKeeper.
+        - Bookie (BookKeeper)
+        - Pulsar (ZooKeeper & Broker)
+    * Pulsar intended to be scaled any odd value >= 3.
+    * Bookie can be scaled to 3+.
+    * Bookie requires relation to pulsar to access ZooKeeper.
     * A dummy pulsar client charm is used to simulate an application connecting to the pulsar cluster.
+
+## Demo
 
 ## Positives of Sidecar 
 * Documentation was good and it was easy to navigate.
