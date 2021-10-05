@@ -47,7 +47,7 @@
     * Pulsar intended to be scaled any odd value >= 3.
     * Bookie can be scaled to 3+.
     * Bookie requires relation to pulsar to access ZooKeeper.
-    * Dummy pulsar clients are used to simulate applications communicating via Pulsar.
+    * A dummy pulsar client charm is used to simulate an application connecting to the pulsar cluster.
 
 ## Demo
 
@@ -59,29 +59,26 @@
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
 * Executing one-off commands via pebble would remove all manual steps required for deployment.
 
-### [Networking problems when using cluster IP after Juju version 2.9.7](https://bugs.launchpad.net/juju/+bug/1943786)
+### [Networking problems when using application IP after Juju version 2.9.7](https://bugs.launchpad.net/juju/+bug/1943786)
 * After Juju version 2.9.7, applications have cluster IPs.
-* `ops.model.network.ingress_address` returns the clust IP, if possible.
-* Sidecar charms trying to communicate by `<ingress-address>:<port>` fail. 
-* The Kubernetes services gets a default target port of 65535 and isn't configurable from within a charm.
-* I avoided this issue by using `ops.model.network.bind_address`.
+* `ops.model.Network.ingress_address` returns the clust IP, if possible.
+* Sidecar charms trying to communicate by `<ingress-address>:<port>` will fail. 
+* Charms relating via this application IP cannot find daemons listening at `<application-ip>:<port>`.
+* I avoided this bug by reverting my Juju controller to version 2.9.3.
 
 ### Unclear Required Changes Between Juju Versions
-* Between periods of development, a new Juju version required the use of a charmcraft.yaml file.
-* Without it, `charmcraft build` would fail without specifying that charmcraft.yaml was missing.
-    $ charmcraft build
-    Ignoring symlink because targets outside the project: 'venv/bin/python'
-    Ignoring symlink because targets outside the project: 'venv/bin/python3'
-    Created 'bookie.charm'.
-* I found this discussed in MatterMost, but it should have been described in official documentation.
+* Between periods of development, a new Juju version was released which required the addition of a charmcraft.yaml file.
+* Without it, `charmcraft build` would fail.
+* I could not easily find documentation about this change.
 
 ## Future Pulsar Improvements
 * Final version of pulsar would have ZooKeeper and Broker in separate charms, with all three charms related to each other.
 * Expanded config options for all three applications.
 * ZooKeeper:
     - Create of znodes using a one-off command after connection from Bookie.
-        - Bookie can provide path(s) where it expects to find znodes.
-    - Initialization of metadata after Broker connects, but before Broker services start.
+    - Initialization of metadata after Broker connects to it.
 * Broker:
     - Start of Broker process only after ZooKeeper is started and connected to Bookie.
 * Implement remaining Pulsar functionality:
+    - Pulsar Functions
+    - Geo-Replication
