@@ -52,17 +52,19 @@
 ## Demo
 
 ## Positives of Sidecar 
-* Documentation was good and it was easy to navigate.
+* Documentation was good but difficult to navigate.
 * I found it very intuitive and fast to create the first working prototype of a charm.
 
 ## Obstacles / Feedback
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
-* Executing one-off commands via pebble would have been useful.
+* Executing one-off commands via pebble would remove all manual steps required for deployment.
 
 ### [Networking problems when using application IP after Juju version 2.9.7](https://bugs.launchpad.net/juju/+bug/1943786)
-* After Juju version 2.9.7, applications have IPs, in addition to individual units.
-* Charms relating via this application IP cannot find daemons listening at `<application-ip>:<port>`.
-* I avoided this bug by reverting my Juju controller to version 2.9.3.
+* After Juju version 2.9.7, applications have cluster IPs.
+* `ops.model.network.ingress_address` returns the clust IP, if possible.
+* Sidecar charms trying to communicate by `<ingress-address>:<port>` fail. 
+* The Kubernetes services gets a default target port of 65535 and isn't configurable from within a charm.
+* I avoided this issue by using `ops.model.network.bind_address`.
 
 ### Unclear Required Changes Between Juju Versions
 * Between periods of development, a new Juju version was released which required the addition of a charmcraft.yaml file.
