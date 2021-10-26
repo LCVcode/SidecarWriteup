@@ -35,19 +35,21 @@
 ## Code
 [Bookie](https://code.launchpad.net/~lcvcode/+git/bookie)
 
-[Pulsar](https://code.launchpad.net/~lcvcode/+git/pulsar)
+[Broker](https://code.launchpad.net/~lcvcode/+git/broker)
 
 [Pulsar-client-dummy](https://code.launchpad.net/~lcvcode/+git/pulsar-client-dummy)
 
 ## Design
 * Design of this Pulsar cluster is as follows:
-    * Two charms:
+    * Three charms:
         - Bookie (BookKeeper)
-        - Pulsar (ZooKeeper & Broker)
-    * Pulsar intended to be scaled any odd value >= 3.
-    * Bookie can be scaled to 3+.
-    * Bookie requires relation to pulsar to access ZooKeeper.
-    * Dummy pulsar clients are used to simulate applications communicating via Pulsar.
+        - Broker 
+        - ZooKeeper-k8s
+    * Broker and ZooKeeper are scaled to any odd value >= 3.
+    * Bookie is scaled to 3+.
+    * Bookie relates to ZooKeeper and Broker.
+    * Broker exposes a "pulsar" relation which is the endpoint for any clients.
+    * Dummy pulsar clients are used to simulate applications communicating through Pulsar.
 
 ## Demo
 
@@ -57,31 +59,26 @@
 
 ## Obstacles / Feedback
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
-* Executing one-off commands via pebble would remove all manual steps required for deployment.
+* Executing one-off commands via pebble would remove all manual steps required for deployment of Pulsar.
 
-### [Networking problems when using cluster IP after Juju version 2.9.7](https://bugs.launchpad.net/juju/+bug/1943786)
+### Networking problems when using cluster IP after Juju version 2.9.7 - [LP#1943786](https://bugs.launchpad.net/juju/+bug/1943786)
 * After Juju version 2.9.7, applications have cluster IPs.
-* `ops.model.network.ingress_address` returns the clust IP, if possible.
+* `ops.model.network.ingress_address` returns the cluster IP, if possible.
 * Sidecar charms trying to communicate by `<ingress-address>:<port>` fail. 
-* The Kubernetes services gets a default target port of 65535 and isn't configurable from within a charm.
-* I avoided this issue by using `ops.model.network.bind_address`.
-
-### Unclear Required Changes Between Juju Versions
-* Between periods of development, a new Juju version required the use of a charmcraft.yaml file.
-* Without it, `charmcraft build` would fail without specifying that charmcraft.yaml was missing.
-    $ charmcraft build
-    Ignoring symlink because targets outside the project: 'venv/bin/python'
-    Ignoring symlink because targets outside the project: 'venv/bin/python3'
-    Created 'bookie.charm'.
-* I found this discussed in MatterMost, but it should have been described in official documentation.
+* The Kubernetes service gets a default target port of 65535 and isn't configurable from within a charm.
+* I avoided this issue by using `ops.model.network.bind_address` instead of `ops.model.network.ingress_address`.
 
 ## Future Pulsar Improvements
-* Final version of pulsar would have ZooKeeper and Broker in separate charms, with all three charms related to each other.
 * Expanded config options for all three applications.
 * ZooKeeper:
     - Create of znodes using a one-off command after connection from Bookie.
         - Bookie can provide path(s) where it expects to find znodes.
     - Initialization of metadata after Broker connects, but before Broker services start.
 * Broker:
-    - Start of Broker process only after ZooKeeper is started and connected to Bookie.
-* Implement remaining Pulsar functionality:
+    - Start of Broker process only after ZooKeeper metadata is initialized.
+* Implement additional Pulsar functionality.
+* Use unique images for each application rather than an all-in-one Pulsar image.
+
+## Other
+* I submitted a documentation bug to Apache regarding initialization of ZooKeeper metadata:
+    * https://github.com/apache/pulsar/issues/12488
