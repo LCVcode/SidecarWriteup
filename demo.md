@@ -11,16 +11,15 @@ juju deploy ./pulsar-client-dummy/pulsar-client-dummy_ubuntu-20.04-amd64.charm -
 ## Setup zookeeper
 ```
 # Setup znodes
-kubectl exec --stdin --tty zookeeper-k8s-0 -n pulsar -c zookeeper -- bin/zkCli.sh -- create /ledgers
-kubectl exec --stdin --tty zookeeper-k8s-0 -n pulsar -c zookeeper -- bin/zkCli.sh -- create /ledgers/available
+juju ssh --container zookeeper zookeeper-k8s/0 "bin/zkCli.sh -- create /ledgers"
+juju ssh --container zookeeper zookeeper-k8s/0 "bin/zkCli.sh -- create /ledgers/available"
 juju add-relation bookie zookeeper-k8s
 ```
 
 # Initialize metadata 
 ```
 juju add-relation bookie broker
-kubectl exec --stdin --tty broker-0 -n pulsar -c broker -- /bin/bash
-. initialize-cluster-metadata.sh
+juju ssh --container broker broker/0 ". ./initialize-cluster-metadata.sh"
 juju add-relation broker pulsar-client-dummy
 ```
 
@@ -34,10 +33,8 @@ kubectl exec -i broker-2 -n pulsar -c broker  -- /pulsar/bin/pulsar broker
 ## Test pulsar
 ```
 # Connect to first pulsar-client and listen for messages
-kubectl exec --stdin --tty pulsar-client-dummy-0 -n pulsar -c pulsar-client -- /bin/bash
-bin/pulsar-client consume persistent://public/default/test -n 100 -s 'consumer-test' -t 'Exclusive'
+juju ssh --container pulsar-client pulsar-client-dummy/0 "bin/pulsar-client consume persistent://public/default/test -n 100 -s 'consumer-test' -t 'Exclusive'"
 
 # Connect to second pulsar-client and publish a message
-kubectl exec --stdin --tty pulsar-client-dummy-1 -n pulsar -c pulsar-client -- /bin/bash
-bin/pulsar-client produce persistent://public/default/test -n 1 -m 'Hello Apache Pulsar in Juju!'
+juju ssh --container pulsar-client pulsar-client-dummy/1 "bin/pulsar-client produce persistent://public/default/test -n 1 -m 'Hello Apache Pulsar in Juju'"
 ```
