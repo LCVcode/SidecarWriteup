@@ -60,6 +60,7 @@
 ## Obstacles / Feedback
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
 * Executing one-off commands via pebble would remove all manual steps required for deployment of Pulsar.
+* Use a work around to achieve this effect
 
 ### Networking problems when using cluster IP after Juju version 2.9.7 - [LP#1943786](https://bugs.launchpad.net/juju/+bug/1943786)
 * After Juju version 2.9.7, applications have cluster IPs.
@@ -73,9 +74,6 @@
 * ZooKeeper:
     - Create of znodes using a one-off command after connection from Bookie.
         - Bookie can provide path(s) where it expects to find znodes.
-    - Initialization of metadata after Broker connects, but before Broker services start.
-* Broker:
-    - Start of Broker process only after ZooKeeper metadata is initialized.
 * Implement additional Pulsar functionality.
 * Use unique images for each application rather than an all-in-one Pulsar image.
 
