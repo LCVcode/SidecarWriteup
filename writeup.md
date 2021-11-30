@@ -48,8 +48,8 @@
     * Broker and ZooKeeper are scaled to any odd value >= 3.
     * Bookie is scaled to 3+.
     * Bookie relates to ZooKeeper and Broker.
-    * Broker exposes a "pulsar" relation which is the endpoint for any clients.
-    * Dummy pulsar clients are used to simulate applications communicating through Pulsar.
+    * Broker exposes a "pulsar" relation which is the endpoint for all clients.
+    * Dummy pulsar clients are used to for demonstration purposes.
 
 ## Demo
 
@@ -71,9 +71,11 @@
 
 ## Future Pulsar Improvements
 * Expanded config options for all three applications.
+* Bookie:
+    - External message storage.
 * ZooKeeper:
-    - Create of znodes using a one-off command after connection from Bookie.
-        - Bookie can provide path(s) where it expects to find znodes.
+    - [Znode creation based on relation data.](https://github.com/openstack-charmers/charm-zookeeper-k8s/issues/1)
+* Implement authentication.
 * Implement additional Pulsar functionality.
 * Use unique images for each application rather than an all-in-one Pulsar image.
 
