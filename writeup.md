@@ -9,15 +9,20 @@
         * Consume messages from topic(s)
         * Apply user-specificed logic to each message
         * Publish results to another topic
+        * Similar to:
+            - AWS Lambda
+            - Google Cloud Functions
+            - Etc
     * [Horizontal Scalability](https://pulsar.apache.org/docs/en/concepts-architecture-overview/)
     * [Multi-tenancy](https://pulsar.apache.org/docs/en/concepts-multi-tenancy/)
     * [Persistent Storage](https://pulsar.apache.org/docs/en/concepts-architecture-overview/#persistent-storage)
-        * Guaranteed delivery of any message that gets to Broker
-        * Non-acknowledged messages are stored until they are delievered and acknowledged
+        * Guaranteed delivery of any message that Broker receives .
+        * Non-acknowledged messages are stored in BookKeeper until their delivery has been acknowledged.
     * [Python Client Library](https://pulsar.apache.org/docs/en/client-libraries-python/)
         * Also libraries for: Java, Go, C++, Node.js, WebSocket, C#
     * [Geo-Replication](https://pulsar.apache.org/docs/en/administration-geo/)
-* Three other Apache applications work in concert to create Pulsar:
+        * Replication of persistently stored message data across multiple clusters of a Pulsar instance.
+* Three other Apache applications work in concert to create Apache Pulsar:
     * ZooKeeper
         - Manages the other applications.
     * BookKeeper
@@ -54,13 +59,16 @@
 ## Demo
 
 ## Positives of Sidecar 
-* Documentation was good but difficult to navigate.
+* Documentation was valuable but needs expansion.
+    * Often, it was more useful to scan Charmhub channels in Mattermost before searching through the docs.
+    * I mostly used the Index for navigation.
+    * Would have been helpful if the Module Index extended all the way to the method level.
 * I found it very intuitive and fast to create the first working prototype of a charm.
 
 ## Obstacles / Feedback
 ### [Lack of One-Off Commands](https://github.com/canonical/pebble/issues/37)
 * Executing one-off commands via pebble would remove all manual steps required for deployment of Pulsar.
-* Use a work around to achieve this effect
+* Use a work around to achieve this effect.
 
 ### Networking problems when using cluster IP after Juju version 2.9.7 - [LP#1943786](https://bugs.launchpad.net/juju/+bug/1943786)
 * After Juju version 2.9.7, applications have cluster IPs.
@@ -71,12 +79,16 @@
 
 ## Future Pulsar Improvements
 * Expanded config options for all three applications.
+    - Proxies
+    - Topic compaction
+    - Replication
 * Bookie:
     - External message storage.
 * ZooKeeper:
     - [Znode creation based on relation data.](https://github.com/openstack-charmers/charm-zookeeper-k8s/issues/1)
-* Implement authentication.
+* Implement authentication & authorization.
 * Implement additional Pulsar functionality.
+* Implement tiered storage with Apache Hadoop.
 * Use unique images for each application rather than an all-in-one Pulsar image.
 
 ## Other
